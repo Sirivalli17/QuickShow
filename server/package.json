@@ -12,14 +12,18 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/express": "^1.7.5",
     "axios": "^1.10.0",
+    "axios-retry": "^4.5.0",
     "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "inngest": "^3.40.1",
-    "mongoose": "^8.16.3"
+    "mongoose": "^8.16.3",
+    "stripe": "^18.3.0",
+    "svix": "^1.69.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
