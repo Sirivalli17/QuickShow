@@ -75,13 +75,23 @@ export const createBooking = async (req , res) => {
             line_items: line_items,
             mode: 'payment',
             metadata: {
-                bookingId: booking._id.toString()
+                bookingId: booking._id.toString(),
             },
             expires_at: Math.floor(Date.now() / 1000) + 30 * 60, // Expires in 30 minutes
-        })
+        });
+
+        console.log("Webhook metadata:", session.metadata);
 
         booking.paymentLink = session.url
         await booking.save()
+
+        // Run Inngest scheduler function to check payment status after 10 mins
+        await inngest.send({
+            name: "app/checkpayment",
+            data: {
+                bookingId: booking._id.toString()
+            }
+        })
 
         res.json({success: true, url: session.url})
 
