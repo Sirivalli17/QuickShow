@@ -84,31 +84,36 @@ const sendBookingConfirmationEmail = inngest.createFunction(
     {id: "send-booking-confirmation-email"},
     {event: "app/show.booked"},
     async({ event, step}) => {
+        console.log("📨 Inngest Event Triggered: app/show.booked");
         const { bookingId } = event.data;
+          console.log("📘 Booking ID:", bookingId);
 
         const booking = await Booking.findById(bookingId).populate({
             path: 'show',
             populate: {path: "movie", model: "Movie"}
         }).populate('user');
 
+        console.log("📩 Sending email to:", booking.user.email);
+
         await sendEmail({
-            to: booking.user.email,
-            subject: `Payment Confirmation: "${booking.show.movie.title}" booked!`,
-            body: ` <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-                    <h2>Hi ${booking.user.name},</h2>
-                    <p>Your booking for <strong style="color: #F84565;">"$
-                    {booking.show.movie.title}"</strong> is confirmed.</p>
-                    <p>
-                    <strong>Date:</strong> ${new Date(booking.show.
-                        showDateTime).toLocaleDateString('en-US',{ timeZone:
-                            'Asia/Kolkata' })}<br/>
-                    <strong>Time:</strong> ${new Date(booking.show.showDateTime).toLocaleTimeString('en-US',{ timeZone:
-                        Asia/Kolkata })}
-                    </p>
-                    <p>Enjoy the show! 🍿🎬</p>
-                    <p>Thanks for Booking with us!!<br/>- QuickShow Team</p>
-                    </div>`
-        })
+        to: booking.user.email,
+        subject: `Payment Confirmation: "${booking.show.movie.title}" booked!`,
+        body: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+            <h2>Hi ${booking.user.name},</h2>
+            <p>Your booking for <strong style="color: #F84565;">"${booking.show.movie.title}"</strong> is confirmed.</p>
+            <p>
+                <strong>Date:</strong> ${new Date(booking.show.showDateTime).toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata' })}<br/>
+                <strong>Time:</strong> ${new Date(booking.show.showDateTime).toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata' })}
+            </p>
+            <p>Enjoy the show! 🍿🎬</p>
+            <p>Thanks for Booking with us!!<br/>- QuickShow Team</p>
+            </div>`
+});
+
+
+
+        console.log("✅ Email sent successfully.");
     }
 )
 
