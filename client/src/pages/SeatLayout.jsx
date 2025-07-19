@@ -72,7 +72,16 @@ const SeatLayout = () => {
 
   const getOccupiedSeats = async() => {
     try {
+       if (!selectedTime?.showId) {
+      console.warn("No showId available yet for fetching occupied seats");
+      return;
+    }
+
+    console.log("Fetching occupied seats for:", selectedTime.showId);
+
       const {data} = await axios.get(`/api/booking/seats/${selectedTime.showId}`)
+      console.log("Selected Time for seat fetch:", selectedTime);
+
       if(data.success) {
         setOccupiedSeats(data.occupiedSeats)
       }else {
@@ -108,11 +117,18 @@ const SeatLayout = () => {
     getShow()
   },[])
 
+  // useEffect(() => {
+  //   if(selectedTime){
+  //     getOccupiedSeats()
+  //   }
+  // },[selectedTime])
+
   useEffect(() => {
-    if(selectedTime){
-      getOccupiedSeats()
-    }
-  },[selectedTime])
+  if (selectedTime?.showId) {
+    getOccupiedSeats();
+  }
+}, [selectedTime]);
+
 
   return show ? (
     <div className='flex flex-col md:flex-row px-6 md:px-16 lg:px-40 py-30 

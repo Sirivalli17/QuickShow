@@ -4,11 +4,12 @@ import BlurCircle from '../components/BlurCircle'
 import timeFormat from '../lib/timeFormat'
 import { dateFormat } from '../lib/dateFormat'
 import { useAppContext } from '../context/AppContext'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 
 const MyBookings = () => {
 
+  const location = useLocation();
   const currency = import.meta.env.VITE_CURRENCY
 
   const {axios, getToken, user, image_base_url } = useAppContext()
@@ -30,11 +31,12 @@ const MyBookings = () => {
     setIsLoading(false)
   }
 
+  
   useEffect(() => {
-    if(user) {
-    getMyBookings()
+    if (user) {
+      getMyBookings();  // ✅ will re-run if `?success=true` is in URL
     }
-  },[user])
+  }, [user, location.search]);
 
   return !isLoading ? (
     <div className='relative px-6 md:px-16 lg:px-40 pt-30 md:pt-40 min-h-[80vh]'>
@@ -66,7 +68,7 @@ const MyBookings = () => {
             </div>
             <div className='text-sm'>
               <p><span className='text-gray-400'>Total Tickets:</span>{item.bookedSeats.length}</p>
-              <p><span className='text-gray-400'>Seat Number:</span>{item.bookedSeats.join("","")}</p>
+              <p><span className='text-gray-400'>Seat Number:</span> {item.bookedSeats.join(", ")}</p>
 
             </div>
           </div>
