@@ -1,90 +1,43 @@
-// import express from 'express';
-// import cors from 'cors';
-// import 'dotenv/config';
-// import connectDB from './configs/db.js';
-// import { clerkMiddleware } from '@clerk/express'
-// import { serve } from "inngest/express";
-// import { inngest, functions } from "./inngest/index.js"
-// import showRouter from './routes/showRoutes.js';
-// import bookingRouter from './routes/bookingRoutes.js';
-// import adminRouter from './routes/adminRoutes.js';
-// import userRouter from './routes/userRoutes.js';
-// import movieRouter from "./routes/movieRoutes.js";
-// import { stripeWebhooks } from './controllers/stripeWebhooks.js';
-// import bodyParser from 'body-parser';
-
-
-
-// const app = express();
-// const port = 3000;
-
-// await connectDB()
-
-// //Stripe Webhooks Route
-// //app.use('/api/stripe', express.raw({type: 'application/json'}), stripeWebhooks)
-// app.post('/api/stripe', bodyParser.raw({ type: 'application/json' }), stripeWebhooks);
-
-// //Middleware
-// app.use(express.json())
-// app.use(cors({
-//   origin: "http://localhost:5173", // or wherever your frontend runs
-//   credentials: true,
-//   allowedHeaders: ["Content-Type", "Authorization"]
-// }));
-// app.use(clerkMiddleware())
-
-// // API Routes
-// app.get('/',(req,res) => res.send('Server is Live!'))
-// app.use('/api/inngest',serve({ client: inngest, functions }))
-// app.use('/api/show', showRouter)
-// app.use('/api/booking', bookingRouter)
-// app.use('/api/admin', adminRouter)
-// app.use('/api/user', userRouter)
-// app.use("/api", movieRouter);
-
-
-// app.listen(port, ()=> console.log(`Server listening at http://localhost:${port}`));
-
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import connectDB from './configs/db.js';
-import { clerkMiddleware } from '@clerk/express';
+import { clerkMiddleware } from '@clerk/express'
 import { serve } from "inngest/express";
-import { inngest, functions } from "./inngest/index.js";
+import { inngest, functions } from "./inngest/index.js"
 import showRouter from './routes/showRoutes.js';
 import bookingRouter from './routes/bookingRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import movieRouter from "./routes/movieRoutes.js";
 import { stripeWebhooks } from './controllers/stripeWebhooks.js';
-import bodyParser from 'body-parser';
+
 
 const app = express();
 const port = 3000;
 
-await connectDB();
+await connectDB()
 
-// ✅ Stripe Webhook Route — MUST come before express.json()
-app.post('/api/stripe', bodyParser.raw({ type: 'application/json' }), stripeWebhooks);
+//Stripe Webhooks Route
+app.use('/api/stripe', express.raw({type: 'application/json'}), stripeWebhooks)
 
-// ✅ Middleware after webhook route
-app.use(express.json());
+//Middleware
+app.use(express.json())
 app.use(cors({
-  origin: "http://localhost:5173", // Update as needed
+  origin: "http://localhost:5173", // or wherever your frontend runs
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.use(clerkMiddleware());
+app.use(clerkMiddleware())
 
-// ✅ Other Routes
-app.get('/', (req, res) => res.send('Server is Live!'));
-app.use('/api/inngest', serve({ client: inngest, functions }));
-app.use('/api/show', showRouter);
-app.use('/api/booking', bookingRouter);
-app.use('/api/admin', adminRouter);
-app.use('/api/user', userRouter);
+// API Routes
+app.get('/',(req,res) => res.send('Server is Live!'))
+app.use('/api/inngest',serve({ client: inngest, functions }))
+app.use('/api/show', showRouter)
+app.use('/api/booking', bookingRouter)
+app.use('/api/admin', adminRouter)
+app.use('/api/user', userRouter)
 app.use("/api", movieRouter);
 
-// ✅ Start server
-app.listen(port, () => console.log(`Server listening at http://localhost:${port}`));
+
+app.listen(port, ()=> console.log(`Server listening at http://localhost:${port}`));
