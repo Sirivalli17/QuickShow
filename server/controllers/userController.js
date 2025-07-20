@@ -6,7 +6,7 @@ import Movie from "../models/Movie.js";
 //API Controller Function to get User Bookings
 export const getUserBookings = async (req, res)=> {
     try {
-        const user = req.auth().userId;
+        const user = req.auth.userId;
 
         const bookings = await Booking.find({user}).populate({
             path: "show",
@@ -23,7 +23,7 @@ export const getUserBookings = async (req, res)=> {
 export const updateFavorite = async (req, res)=> {
     try {
         const { movieId } = req.body;
-        const userId = req.auth().userId;
+        const userId = req.auth.userId;
 
         const user = await clerkClient.users.getUser(userId)
 
@@ -52,8 +52,10 @@ export const updateFavorite = async (req, res)=> {
 export const getFavorite = async (req, res)=> {
     try {
 
-        const user = await clerkClient.users.getUser(req.auth().userId)
-        const favorites = user.privateMetadata.favorites;
+        const userId = req.auth.userId;
+        const user = await clerkClient.users.getUser(userId);
+
+        const favorites = user.privateMetadata.favorites || [];
 
         //Getting movies from database
         const movies = await Movie.find({_id: {$in: favorites}})
