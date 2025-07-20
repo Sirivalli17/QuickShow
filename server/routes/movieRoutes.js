@@ -4,6 +4,7 @@ import { protectAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
+router.get("/movies", getAllMovies);
 router.get("/admin/movies", protectAdmin, getAllMovies);
 
 export default router;
