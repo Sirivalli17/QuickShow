@@ -24,7 +24,8 @@ app.use('/api/stripe', express.raw({type: 'application/json'}), stripeWebhooks)
 //Middleware
 app.use(express.json())
 app.use(cors({
-  origin: "http://localhost:5173", // or wherever your frontend runs
+  //origin: "http://localhost:5173", // or wherever your frontend runs
+  origin: ["http://localhost:5173", "https://quickshow-jet.vercel.app"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
