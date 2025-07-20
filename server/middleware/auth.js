@@ -25,11 +25,11 @@
 //     }
 // }
 
-import { clerkClient } from "@clerk/express";
+import { getAuth, clerkClient } from "@clerk/express";
 
 export const protectAdmin = async (req, res, next) => {
   try {
-    const { userId } = req.auth();
+    const { userId } = getAuth(req);;
 
     if (!userId) {
       console.warn("Unauthorized: No userId from Clerk");
