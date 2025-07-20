@@ -14,10 +14,14 @@ const syncUserCreation = inngest.createFunction(
     {event: 'clerk/user.created'},
     async ({ event }) => {
         const {id,first_name,last_name,email_addresses,image_url} = event.data
+
+        const name = `${first_name || ''} ${last_name || ''}`.trim() || email_addresses[0].email_address;
+
         const userData = {
             _id: id,
             email: email_addresses[0].email_address,
-            name: first_name + ' ' + last_name,
+            //name: first_name + ' ' + last_name,
+            name,
             image: image_url
         }
         await User.create(userData)
@@ -40,10 +44,14 @@ const syncUserUpdation = inngest.createFunction(
     {event: 'clerk/user.updated'},
     async ({ event }) => {
         const {id , first_name , last_name , email_addresses , image_url} = event.data
+
+         const name = `${first_name || ''} ${last_name || ''}`.trim() || email_addresses[0].email_address;
+
          const userData = {
             _id: id,
             email: email_addresses[0].email_address,
-            name: first_name + ' ' + last_name,
+            //name: first_name + ' ' + last_name,
+            name,
             image: image_url
         }
         await User.findByIdAndUpdate(id, userData);
@@ -100,7 +108,7 @@ const sendBookingConfirmationEmail = inngest.createFunction(
         subject: `Payment Confirmation: "${booking.show.movie.title}" booked!`,
         body: `
             <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-            <h2>Hi ,</h2>
+            <h2>Hi ${booking.user.name},</h2>
             <p>Your booking for <strong style="color: #F84565;">"${booking.show.movie.title}"</strong> is confirmed.</p>
             <p>
                 <strong>Date:</strong> ${new Date(booking.show.showDateTime).toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata' })}<br/>
